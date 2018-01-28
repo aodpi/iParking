@@ -11,9 +11,10 @@ using System;
 namespace iParking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180128200914_parkingDetails")]
+    partial class parkingDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,29 +96,6 @@ namespace iParking.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Parkings");
-                });
-
-            modelBuilder.Entity("iParking.Models.ParkingReservation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<decimal>("AmountPaid");
-
-                    b.Property<DateTime>("ParkingDate");
-
-                    b.Property<TimeSpan>("ParkingTime");
-
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
-                    b.Property<Guid>("VerificationCode");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ParkingReservations");
                 });
 
             modelBuilder.Entity("iParking.Models.UserWallet", b =>
@@ -243,14 +221,6 @@ namespace iParking.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("iParking.Models.ParkingReservation", b =>
-                {
-                    b.HasOne("iParking.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("iParking.Models.UserWallet", b =>

@@ -38,5 +38,8 @@ namespace iParking.Models.AccountViewModels
 
         [Required, Display(Name = "Gen")]
         public string Gender { get; set; }
+
+        [Required]
+        public string UserName { get; set; }
     }
 }

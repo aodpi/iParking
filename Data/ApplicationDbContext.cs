@@ -16,7 +16,7 @@ namespace iParking.Data
         }
 
         public DbSet<Parking> Parkings { get; set; }
-
+        public DbSet<ParkingReservation> ParkingReservations { get; set; }
         public DbSet<UserWallet> Wallets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
