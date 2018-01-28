@@ -1,0 +1,35 @@
+﻿@inject UserManager<ApplicationUser> _userManager
+@{
+    ViewData["Title"] = "Home Page";
+    var user = await _userManager.GetUserAsync(User);
+}
+
+<style>
+    td{
+        padding: 5px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-8"></div>
+    <div class="col-md-4 text-right">
+        <table border="1">
+            <tr>
+                <td>First Name</td>
+                <td>@user.FirstName</td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td>@user.LastName</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>@user.Email</td>
+            </tr>
+            <tr>
+                <td>Phone</td>
+                <td>@user.PhoneNumber</td>
+            </tr>
+        </table>
+    </div>
+</div>
