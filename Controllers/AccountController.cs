@@ -323,7 +323,8 @@ namespace iParking.Controllers
                     UserName = model.UserName,
                     Email = model.Email,
                     FirstName = model.FirstName,
-                    LastName = model.LastName
+                    LastName = model.LastName,
+                    PhoneNumber = model.PhoneNumber
                 };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
