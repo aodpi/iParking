@@ -37,7 +37,7 @@ namespace iParking.Services
                 totalAmount = wallet.Amount;
             }
 
-            var result = totalAmount.ToString("C", new CultureInfo("ro-MD"));
+            var result = string.Format("{0:N} Lei", totalAmount);
             return result;
         }
     }
