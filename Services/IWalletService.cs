@@ -38,6 +38,7 @@ namespace iParking.Services
             }
 
             var result = string.Format("{0:N} Lei", totalAmount);
+
             return result;
         }
     }
