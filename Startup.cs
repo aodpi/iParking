@@ -42,8 +42,8 @@ namespace iParking
                 services.AddAuthentication()
                     .AddFacebook(opts =>
                     {
-                        opts.AppId = "410176332753797";
-                        opts.AppSecret = "9f5c3ce91a675680c83fb1f261c6b64d";
+                        opts.AppId = Configuration.GetValue<string>("FACEBOOK_APP_ID");
+                        opts.AppSecret = Configuration.GetValue<string>("FACEBOOK_APP_SECRET");
                     });
 
             }
