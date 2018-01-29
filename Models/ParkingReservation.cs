@@ -12,7 +12,7 @@ namespace iParking.Models
         public ApplicationUser User { get; set; }
 
         public DateTime ParkingDate { get; set; }
-        public TimeSpan ParkingTime { get; set; }
+        public int ParkingTime { get; set; }
         public decimal AmountPaid { get; set; }
         public Guid VerificationCode { get; set; }
     }

@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using iParking.Data;
 using iParking.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace iParking.Controllers
 {
     public class ReservationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ReservationsController(ApplicationDbContext context)
+        public ReservationsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Reservations
@@ -59,16 +62,31 @@ namespace iParking.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,UserId,ParkingDate,ParkingTime,AmountPaid,VerificationCode")] ParkingReservation parkingReservation)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(parkingReservation);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", parkingReservation.UserId);
-            return View(parkingReservation);
+
+            var userId = _userManager.GetUserId(User);
+
+            parkingReservation.UserId = userId;
+            parkingReservation.VerificationCode = Guid.NewGuid();
+            _context.Add(parkingReservation);
+            await _context.SaveChangesAsync();
+            return View("ReservationDetails", parkingReservation);
         }
 
+        public string VerifyCode(Guid verification_code)
+        {
+            var rz = _context.ParkingReservations.FirstOrDefault(f => f.VerificationCode == verification_code);
+
+            if(rz == null)
+            {
+                ViewData["Result"] = "Cod invalid :(";
+            }
+            else
+            {
+                ViewData["Result"] = "Codul este valid";
+            }
+
+            return (string)ViewData["Result"];
+        }
         // GET: Reservations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

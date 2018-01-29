@@ -1,17 +1,35 @@
 ﻿@inject UserManager<ApplicationUser> _userManager
+@model ParkingReservation
 @{
     ViewData["Title"] = "Home Page";
     var user = await _userManager.GetUserAsync(User);
 }
 
 <style>
-    td{
+    td {
         padding: 5px;
     }
 </style>
 
 <div class="row">
-    <div class="col-md-8"></div>
+    <div class="col-md-8">
+        <form asp-action="Create" asp-controller="Reservations" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ParkingDate" class="control-label"></label>
+                <input asp-for="ParkingDate" class="form-control" />
+                <span asp-validation-for="ParkingDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ParkingTime" class="control-label"></label>
+                <input asp-for="ParkingTime" class="form-control" />
+                <span asp-validation-for="ParkingTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Rezerva" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
     <div class="col-md-4 text-right">
         <table border="1">
             <tr>

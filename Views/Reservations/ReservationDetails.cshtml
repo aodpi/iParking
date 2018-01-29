@@ -1,0 +1,13 @@
+﻿@model ParkingReservation
+@{
+    ViewData["Title"] = "ReservationDetails";
+}
+
+<h2>ReservationDetails</h2>
+
+<script type="text/javascript" src="~/js/qrcode.min.js"></script>
+
+<div id="qrcode"></div>
+<script type="text/javascript">
+    new QRCode(document.getElementById("qrcode"), "@Url.Action("VerifyCode", "Reservations", new { verification_code = Model.VerificationCode }, Url.ActionContext.HttpContext.Request.Scheme)");
+</script>
