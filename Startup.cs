@@ -23,10 +23,17 @@ namespace iParking
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            if (Environment.IsDevelopment())
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(opts=>
+            if (Environment.IsProduction())
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(string.Format(Configuration.GetConnectionString("SqlServerConnection"),
+                    Configuration.GetValue<string>("SQL_USER"),
+                    Configuration.GetValue<string>("SQL_PASS"))));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
             {
                 opts.Password.RequireDigit = false;
                 opts.Password.RequireUppercase = false;
