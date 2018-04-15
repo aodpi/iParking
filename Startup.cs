@@ -23,15 +23,10 @@ namespace iParking
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (Environment.IsDevelopment())
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-
-            if (Environment.IsProduction())
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(string.Format(Configuration.GetConnectionString("SqlServerConnection"),
-                    Configuration.GetValue<string>("SQL_USER"),
-                    Configuration.GetValue<string>("SQL_PASS"))));
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(string.Format(Configuration.GetConnectionString("DefaultConnection"),
+                Configuration.GetValue<string>("SQL_USER"),
+                Configuration.GetValue<string>("SQL_PASS"))));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
             {
@@ -44,30 +39,27 @@ namespace iParking
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            if (Environment.IsProduction())
-            {
-                services.AddAuthentication()
-                    .AddFacebook(opts =>
-                    {
-                        opts.AppId = Configuration.GetValue<string>("FACEBOOK_APP_ID");
-                        opts.AppSecret = Configuration.GetValue<string>("FACEBOOK_APP_SECRET");
-                    });
+            ConfigureFacebook(services);
 
-            }
-            else
-            {
-                services.AddAuthentication()
-                    .AddFacebook(opts =>
-                    {
-                        opts.AppId = "214957042409829";
-                        opts.AppSecret = "fac43c43f17dc5624c37e19517745209";
-                    });
-            }
-
-            // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IWalletService, WalletService>();
             services.AddMvc();
+        }
+
+        private void ConfigureFacebook(IServiceCollection services)
+        {
+            var appId = Configuration.GetValue<string>("FACEBOOK_APP_ID");
+            var appSecret = Configuration.GetValue<string>("FACEBOOK_APP_SECRET");
+
+            if (!appId.Exists() || !appSecret.Exists())
+                return;
+
+            services.AddAuthentication()
+                .AddFacebook(opts =>
+                {
+                    opts.AppId = appId;
+                    opts.AppSecret = appSecret;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
