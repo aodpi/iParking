@@ -47,7 +47,7 @@
                 {
                     <tr>
                         <td>@user</td>
-                        <td><a href="#">x</a></td>
+                        <td><a href="#" onclick="deleteUser('@user')">x</a></td>
                     </tr>
                 }
             </table>
@@ -61,6 +61,17 @@
 @section Scripts{
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.js"></script>
     <script type="text/javascript">
+        function deleteUser(username) {
+            if (confirm("Sunteti sigur ca doriti sa stergeti utilizatorul: " + username + "?")) {
+                $.ajax({
+                    url: '@(Url.Action("DeleteUser", "Account"))/?username=' + username,
+                    type: 'DELETE',
+                    success: function (data) {
+                        window.location.reload();
+                    }
+                });
+            }
+        }
         $(document).ready(function () {
             $("#users").DataTable({
                 searching: false,

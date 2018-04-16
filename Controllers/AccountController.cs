@@ -87,7 +87,7 @@ namespace iParking.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult CreateAccount()
         {
-            var users = _userManager.Users.Select(f => f.UserName);
+            var users = _userManager.Users.Select(f => f.UserName).Where(f=> User.Identity.Name != f);
 
             var model = new CreateAccountViewModel
             {
@@ -135,8 +135,21 @@ namespace iParking.Controllers
                     }
                 }
             }
-            model.ExistingUserNames = _userManager.Users.Select(f => f.UserName);
+            model.ExistingUserNames = _userManager.Users.Select(f => f.UserName).Where(f => User.Identity.Name != f);
             return View(model);
+        }
+
+        [HttpDelete, Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if(user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+            }
+
+            return Ok();
         }
 
         [HttpGet]
