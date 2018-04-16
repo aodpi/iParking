@@ -3,55 +3,52 @@
     ViewData["Title"] = "CreateAccount";
 }
 <div class="row">
-    <div class="col-md-12 col-xs-12">
-        <h2 class="col-md-6 col-xs-6">Creare cont</h2>
-        <h2 class="col-md-offset-6">Lista utilizatori</h2>
-        <div class="col-md-6 col-xs-6">
-            <form asp-controller="Account" asp-action="CreateAccount" method="post">
-                <div class="form-group">
-                    <label asp-for="UserName"></label>
-                    <input asp-for="UserName" class="form-control" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </div>
+    <h2 class="col-md-6">Creare cont</h2>
+    <h2 class="col-md-4 col-md-offset-6">Lista utilizatori</h2>
+    <div class="col-md-6">
+        <form asp-controller="Account" asp-action="CreateAccount" method="post">
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="Password"></label>
-                    <input asp-for="Password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="ConfirmPassword"></label>
-                    <input asp-for="ConfirmPassword" class="form-control" />
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
 
-                <div class="form-group">
-                    <label asp-for="IsAdmin"></label>
-                    <input type="checkbox" asp-for="IsAdmin"/>
-                </div>
+            <div class="form-group">
+                <label asp-for="IsAdmin"></label>
+                <input type="checkbox" asp-for="IsAdmin" />
+            </div>
 
-                <button type="submit" class="btn btn-default">Inregistreaza</button>
-            </form>
-        </div>
-        <div class="col-md-4 col-xs-4">
-
-            <table class="table table-responsive table-striped" id="users">
-                <thead>
-                    <tr>
-                        <th>Nume utilizator</th>
-                        <th>Sterge</th>
-                    </tr>
-                </thead>
-                @foreach (var user in Model.ExistingUserNames)
-                {
-                    <tr>
-                        <td>@user</td>
-                        <td><a href="#" onclick="deleteUser('@user')">x</a></td>
-                    </tr>
-                }
-            </table>
-        </div>
+            <button type="submit" class="btn btn-default">Inregistreaza</button>
+        </form>
+    </div>
+    <div class="col-md-4" style="margin-top: 20px">
+        <table class="table table-responsive table-striped" id="users">
+            <thead>
+                <tr>
+                    <th>Nume utilizator</th>
+                    <th>Sterge</th>
+                </tr>
+            </thead>
+            @foreach (var user in Model.ExistingUserNames)
+            {
+                <tr>
+                    <td>@user</td>
+                    <td><a href="#" onclick="deleteUser('@user')">x</a></td>
+                </tr>
+            }
+        </table>
     </div>
 </div>
 @section Styles {
