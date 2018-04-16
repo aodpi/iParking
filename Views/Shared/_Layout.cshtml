@@ -21,6 +21,8 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -39,6 +41,13 @@
                     <li>
                         <a asp-controller="Wallet" asp-action="Fill">@amount <i style="margin-left: 5px;" class="fa fa-plus" aria-hidden="true"></i></a>
                     </li>
+
+                    @if(User.IsInRole("Admin"))
+                    {
+                        <li>
+                            <a asp-controller="Account" asp-action="CreateAccount">Creare cont nou</a>
+                        </li>
+                    }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>

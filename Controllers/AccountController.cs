@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using iParking.Models;
 using iParking.Models.AccountViewModels;
 using iParking.Services;
+using System.Linq;
 
 namespace iParking.Controllers
 {
@@ -80,6 +81,61 @@ namespace iParking.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult CreateAccount()
+        {
+            var users = _userManager.Users.Select(f => f.UserName);
+
+            var model = new CreateAccountViewModel
+            {
+                ExistingUserNames = users
+            };
+            return View(model);
+        }
+        
+        [HttpPost, Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateAccount(CreateAccountViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var newUser = new ApplicationUser
+                {
+                    UserName = model.UserName
+                };
+
+                var result = await _userManager.CreateAsync(newUser, model.Password);
+
+                if(!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+                else
+                {
+                    if(model.IsAdmin)
+                    {
+                        var roleResult = await _userManager.AddToRoleAsync(newUser, "Admin");
+
+                        if(!roleResult.Succeeded)
+                        {
+                            foreach (var error in roleResult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                        }
+                        else
+                        {
+                            return RedirectToAction("CreateAccount");
+                        }
+                    }
+                }
+            }
+            model.ExistingUserNames = _userManager.Users.Select(f => f.UserName);
             return View(model);
         }
 
