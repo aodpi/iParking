@@ -65,8 +65,13 @@
 @section Scripts {
     <script>
         var map;
+        var directionsService;
+        var directionsDisplay;
+
         function initMap() {
             var infoWindow = new google.maps.InfoWindow;
+            directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer();
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
@@ -74,10 +79,13 @@
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
-                    var map = new google.maps.Map(document.getElementById('map'), {
+                    map = new google.maps.Map(document.getElementById('map'), {
                         center: pos,
                         zoom: 16
                     });
+
+                    directionsDisplay.setMap(map);
+                    calcRoute(pos, new google.maps.LatLng(47.026256, 28.830026));
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map
@@ -89,6 +97,19 @@
                 // Browser doesn't support Geolocation
                 handleLocationError(false, infoWindow, map.getCenter());
             }
+        }
+
+        function calcRoute(start, end) {
+            var request = {
+                origin: start,
+                destination: end,
+                travelMode: 'DRIVING'
+            };
+            directionsService.route(request, function (result, status) {
+                if (status == 'OK') {
+                    directionsDisplay.setDirections(result);
+                }
+            });
         }
 
         function handleLocationError(browserHasGeolocation, infoWindow, pos) {
