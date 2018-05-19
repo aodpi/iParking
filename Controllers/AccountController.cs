@@ -10,6 +10,8 @@ using iParking.Models;
 using iParking.Models.AccountViewModels;
 using iParking.Services;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace iParking.Controllers
 {
@@ -21,17 +23,20 @@ namespace iParking.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
+        private readonly IWalletService _walletService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger,
+            IWalletService walletService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
+            _walletService = walletService;
         }
 
         [TempData]
@@ -84,15 +89,25 @@ namespace iParking.Controllers
             return View(model);
         }
 
+        private IEnumerable<ApplicationUser> GetExistingUsers()
+        {
+            return _userManager.Users.Where(f => User.Identity.Name != f.UserName);
+        }
+
         [Authorize(Roles = "Admin")]
         public IActionResult CreateAccount()
         {
-            var users = _userManager.Users.Select(f => f.UserName).Where(f=> User.Identity.Name != f);
-
+            var users = GetExistingUsers();
             var model = new CreateAccountViewModel
             {
-                ExistingUserNames = users
+                ExistingUserNames = users,
+                WalletAmounts = new Dictionary<string, string>()
             };
+
+            foreach (var item in users)
+            {
+                model.WalletAmounts.Add(item.Id, _walletService.GetCurrentAmount(item.Id));
+            }
             return View(model);
         }
         
@@ -135,7 +150,12 @@ namespace iParking.Controllers
                     }
                 }
             }
-            model.ExistingUserNames = _userManager.Users.Select(f => f.UserName).Where(f => User.Identity.Name != f);
+            model.ExistingUserNames = GetExistingUsers();
+            model.WalletAmounts = new Dictionary<string, string>();
+            foreach (var item in model.ExistingUserNames)
+            {
+                model.WalletAmounts.Add(item.Id, _walletService.GetCurrentAmount(item.Id));
+            }
             return View(model);
         }
 
@@ -294,6 +314,7 @@ namespace iParking.Controllers
                     LastName = model.LastName,
                     BirthDate = model.BirthDate,
                     Gender = model.Gender,
+                    IDNP = model.IDNP
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

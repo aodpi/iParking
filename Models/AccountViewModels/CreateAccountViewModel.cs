@@ -18,7 +18,9 @@ namespace iParking.Models.AccountViewModels
         [Required, Compare("Password", ErrorMessage = "Parolele nu coincid"), Display(Name = "Confirmare Parola"), DataType(DataType.Password)]
         [StringLength(100, MinimumLength = 4)]
         public string ConfirmPassword { get; set; }
-        public IEnumerable<string> ExistingUserNames { get; set; }
+        public IEnumerable<ApplicationUser> ExistingUserNames { get; set; }
+
+        public Dictionary<string, string> WalletAmounts { get; set; }
 
         [Display(Name = "Admin?")]
         public bool IsAdmin { get; set; }

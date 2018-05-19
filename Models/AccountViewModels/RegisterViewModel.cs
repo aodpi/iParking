@@ -42,5 +42,9 @@ namespace iParking.Models.AccountViewModels
         [Required]
         [Display(Name = "Nume de utilizator")]
         public string UserName { get; set; }
+
+        [Required]
+        [StringLength(15, MinimumLength = 14)]
+        public string IDNP { get; set; }
     }
 }

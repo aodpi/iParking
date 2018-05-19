@@ -37,15 +37,23 @@
         <table class="table table-responsive table-striped" id="users">
             <thead>
                 <tr>
-                    <th>Nume utilizator</th>
+                    <th>Nickname</th>
+                    <th>Nume</th>
+                    <th>Prenume</th>
+                    <th>Portofel</th>
+                    <th>IDNP</th>
                     <th>Sterge</th>
                 </tr>
             </thead>
             @foreach (var user in Model.ExistingUserNames)
             {
                 <tr>
-                    <td>@user</td>
-                    <td><a href="#" onclick="deleteUser('@user')">x</a></td>
+                    <td>@user.UserName</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@Model.WalletAmounts[user.Id]</td>
+                    <td>@user.IDNP</td>
+                    <td><a href="#" style="text-align:center" onclick="deleteUser('@user')">x</a></td>
                 </tr>
             }
         </table>
@@ -75,7 +83,7 @@
                 columnDefs: [
                     {
                         "orderable": false,
-                        "targets": 1
+                        "targets": [2,3,4,5]
                     }
                 ]
             });
