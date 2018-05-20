@@ -40,11 +40,20 @@
                     <option value="0">Selectati parcarea...</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label class="control-label">Locuri libere</label>
+                <select asp-for="SlotNumber" class="form-control" disabled>
+                    <option value="0">Selectati loc...</option>
+                </select>
+            </div>
             <label id="tamount"></label>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </form>
+    </div>
+    <div class="col-md-8">
+        <table id="slotstable" style="margin-bottom:30px;" cellpadding="5" border="1"></table>
     </div>
 </div>
 
@@ -60,6 +69,17 @@
         #map {
             height: 400px;
             width: 100%;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            color: white;
+            text-align: center;
+        }
+
+        table{
+            width: 100%;
+            height: 100%;
         }
     </style>
 }
@@ -127,12 +147,16 @@
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBinp-qLSF_vLY3g5JrV3Zk0C9wFLlvTlM&callback=initMap" async defer></script>
     <script type="text/javascript">
+        var firstItem = $("<option/>", {
+            value: 0,
+            text: "Selectati loc..."
+        }), aslots = $("#SlotNumber"), slotstable = $("#slotstable");
+
         $("#ParkingId").change(function (val) {
             $.get({
                 url: 'Reservations/GetLatLong?parkingId=' + $(this).val(),
                 success: function (data) {
                     calcRoute(currentPos, new google.maps.LatLng(data.latitude, data.longitude));
-
                 }
             });
 
@@ -140,10 +164,56 @@
                 url: "Reservations/CalcPrice/?parkingId=" + $(this).val() + "&hours=" + $("#ParkingDuration").val(),
                 success: function (data) {
                     $("#tamount").text(data);
-
                 }
             })
 
+            $.get({
+                url: "Reservations/GetAvailableSlots/?parkingId=" + $(this).val(),
+                success: function (data) {
+                    if (data.length > 0) {
+                        aslots.empty();
+                        aslots.append(firstItem);
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].isAvailable) {
+                                aslots.append($("<option/>", {
+                                    value: data[i].slotNumber,
+                                    text: data[i].slotNumber
+                                }));
+                            }
+                        }
+
+                        var counter = 0;
+                        var rows = data.length / 10;
+
+                        var tr = $("<tr/>");
+
+                        for (var i = 0; i < rows; i++) {
+                            for (var j = 0; j < 10; j++) {
+                                tr.append($("<td/>", {
+                                    text: data[counter].slotNumber,
+                                    css: {
+                                        'background-color': data[counter].isAvailable ? "#27ae60" : "#e74c3c"
+                                    }
+                                }))
+                                counter++;
+                            }
+                            slotstable.append(tr);
+                            tr = $("<tr/>");
+                        }
+                        
+                        aslots.removeAttr("disabled");
+                    }
+                    else {
+                        aslots.empty();
+                        aslots.append($("<option/>", {
+                            value: 0,
+                            text: "Nu sunt locuri disponibile..."
+                        }))
+                        aslots.attr("disabled", true);
+
+                    }
+                }
+            })
         });
 
         $("#ParkingDuration").change(function (val) {

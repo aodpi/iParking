@@ -78,6 +78,37 @@ namespace iParking.Controllers
             }
             return 0;
         }
+
+        public class Slot
+        {
+            public int SlotNumber { get; set; }
+            public bool IsAvailable { get; set; }
+        }
+
+        public IActionResult GetAvailableSlots(int parkingId)
+        {
+            var parking = _context.Parkings.Find(parkingId);
+
+            if(parking != null)
+            {
+                var reservations = _context.ParkingReservations.Where(f => f.ParkingDate >= DateTime.Now).Select(f => f.SlotNumber);
+
+                var slots = Enumerable.Range(1, parking.ParkingSlots);
+
+                List<Slot> result = new List<Slot>();
+                foreach (var item in slots)
+                {
+                    result.Add(new Slot
+                    {
+                        SlotNumber = item,
+                        IsAvailable = !reservations.Contains(item)
+                    });
+                }
+
+                return Json(result);
+            }
+            return Json(Enumerable.Empty<Slot>());
+        }
         // POST: Reservations/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -91,7 +122,6 @@ namespace iParking.Controllers
             {
                 var parking = _context.Parkings.FirstOrDefault(f => f.Id == model.ParkingId);
                 var totalAmount = model.ParkingDuration * parking.PricePerHour;
-
                 if (_walletService.Pay(totalAmount, User))
                 {
                     var parkingReservation = new ParkingReservation
@@ -102,7 +132,9 @@ namespace iParking.Controllers
                         ParkingDate = model.ParkingDate,
                         ParkingTime = model.ParkingDuration,
                         VerificationCode = Guid.NewGuid(),
-                        AmountPaid = model.ParkingDuration * parking.PricePerHour
+                        AmountPaid = model.ParkingDuration * parking.PricePerHour,
+                        SlotNumber = model.SlotNumber,
+                        ParkingId = model.ParkingId
                     };
                     _context.Add(parkingReservation);
                     await _context.SaveChangesAsync();

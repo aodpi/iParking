@@ -11,9 +11,10 @@ using System;
 namespace iParking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180520164559_parking_relation")]
+    partial class parking_relation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,8 +122,6 @@ namespace iParking.Migrations
                     b.Property<int>("ParkingId");
 
                     b.Property<int>("ParkingTime");
-
-                    b.Property<int>("SlotNumber");
 
                     b.Property<string>("UserId")
                         .IsRequired();

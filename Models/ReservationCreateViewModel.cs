@@ -17,6 +17,8 @@ namespace iParking.Models
         public decimal AmountPaid { get; set; }
         public List<Parking> AvailableParkings { get; set; }
 
+        public int SlotNumber { get; set; }
+
         public IEnumerable<string> CarCategories { get; set; } = new List<string>
         {
             "A",

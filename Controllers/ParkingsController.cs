@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using iParking.Data;
 using iParking.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace iParking.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ParkingsController : Controller
     {
         private readonly ApplicationDbContext _context;

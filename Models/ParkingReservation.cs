@@ -19,6 +19,10 @@ namespace iParking.Models
         public DateTime ParkingDate { get; set; }
         public int ParkingTime { get; set; }
         public decimal AmountPaid { get; set; }
+        public int ParkingId { get; set; }
+        public Parking Parking { get; set; }
         public Guid VerificationCode { get; set; }
+
+        public int SlotNumber { get; set; }
     }
 }
