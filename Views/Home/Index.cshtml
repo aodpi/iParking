@@ -20,33 +20,8 @@
 
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Create" asp-controller="Reservations" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ParkingDate" class="control-label"></label>
-                <input asp-for="ParkingDate" class="form-control" />
-                <span asp-validation-for="ParkingDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ParkingTime" class="control-label"></label>
-                <input asp-for="ParkingTime" class="form-control" />
-                <span asp-validation-for="ParkingTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CarNumber" class="control-label"></label>
-                <input asp-for="CarNumber" class="form-control" />
-                <span asp-validation-for="CarNumber" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="CarCategory" class="control-label"></label>
-                <input asp-for="CarCategory" class="form-control" />
-                <span asp-validation-for="CarCategory" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Rezerva" class="btn btn-default" />
-            </div>
-        </form>
+        <h1>iParking</h1>
+        <select id="parkings" style="margin-bottom: 30px;" class="form-control"></select>
     </div>
     <div id="map"></div>
 </div>
@@ -57,7 +32,9 @@
         var map;
         var directionsService;
         var directionsDisplay;
-
+        var parkingsList = [];
+        var existingmarkers = [];
+        var currentPos;
         function initMap() {
             var infoWindow = new google.maps.InfoWindow;
             directionsService = new google.maps.DirectionsService();
@@ -69,17 +46,42 @@
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
+
+                    currentPos = pos;
                     map = new google.maps.Map(document.getElementById('map'), {
                         center: pos,
                         zoom: 16
                     });
 
                     directionsDisplay.setMap(map);
-                    calcRoute(pos, new google.maps.LatLng(47.026256, 28.830026));
-                    var marker = new google.maps.Marker({
-                        position: pos,
-                        map: map
-                    });
+
+                    $.get({
+                        url: "Home/GetParkings",
+                        success: function (data) {
+                            parkingsList = [];
+                            for (var i = 0; i < data.length; i++) {
+                                var mpos = {
+                                    lat: data[i].latitude,
+                                    lng: data[i].longitude
+                                };
+                                var marker = new google.maps.Marker({
+                                    map: map,
+                                    position: mpos,
+                                    title: data[i].parkingName
+                                });
+
+                                existingmarkers.push(marker);
+                                map.setCenter(mpos);
+                                $("#parkings").append($("<option/>", {
+                                    value: data[i].id,
+                                    text: data[i].parkingName
+                                }));
+
+                                parkingsList.push(data[i]);
+                            }
+                        }
+
+                    })
                 }, function () {
                     handleLocationError(true, infoWindow, map.getCenter());
                 });
@@ -88,6 +90,31 @@
                 handleLocationError(false, infoWindow, map.getCenter());
             }
         }
+
+        $("#parkings").change(function () {
+            var value = $(this).val();
+
+            var parking;
+
+            for (var i = 0; i < parkingsList.length; i++) {
+                if (parkingsList[i].id === parseInt(value)) {
+                    parking = parkingsList[i];
+                    break;
+                }
+            }
+
+            for (var i = 0; i < existingmarkers.length; i++) {
+                existingmarkers[i].setMap(null);
+                existingmarkers.pop();
+            }
+
+            var mpos = {
+                lat: parking.latitude,
+                lng: parking.longitude
+            };
+            
+            calcRoute(currentPos, mpos);
+        });
 
         function calcRoute(start, end) {
             var request = {

@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using iParking.Models;
 using Microsoft.AspNetCore.Authorization;
+using iParking.Data;
 
 namespace iParking.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context) => _context = context;
+
         public IActionResult Index() => View();
 
         public IActionResult About()
@@ -30,5 +35,10 @@ namespace iParking.Controllers
 
         public IActionResult Error() => 
             View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
+        public IActionResult GetParkings()
+        {
+            return Json(_context.Parkings);
+        }
     }
 }
