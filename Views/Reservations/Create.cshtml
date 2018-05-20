@@ -129,7 +129,7 @@
     <script type="text/javascript">
         $("#ParkingId").change(function (val) {
             $.get({
-                url: 'GetLatLong?parkingId=' + $(this).val(),
+                url: 'Reservations/GetLatLong?parkingId=' + $(this).val(),
                 success: function (data) {
                     calcRoute(currentPos, new google.maps.LatLng(data.latitude, data.longitude));
 
@@ -137,7 +137,7 @@
             });
 
             $.get({
-                url: "CalcPrice/?parkingId=" + $(this).val() + "&hours=" + $("#ParkingDuration").val(),
+                url: "Reservations/CalcPrice/?parkingId=" + $(this).val() + "&hours=" + $("#ParkingDuration").val(),
                 success: function (data) {
                     $("#tamount").text(data);
 
@@ -148,7 +148,7 @@
 
         $("#ParkingDuration").change(function (val) {
             $.get({
-                url: "CalcPrice/?parkingId=" + $("#ParkingId").val() + "&hours=" + $(this).val(),
+                url: "Reservations/CalcPrice/?parkingId=" + $("#ParkingId").val() + "&hours=" + $(this).val(),
                 success: function (data) {
                     $("#tamount").text(data);
 
