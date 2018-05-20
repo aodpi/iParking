@@ -42,7 +42,7 @@
                     <th>Prenume</th>
                     <th>Portofel</th>
                     <th>IDNP</th>
-                    <th>Sterge</th>
+                    <th>Actiuni</th>
                 </tr>
             </thead>
             @foreach (var user in Model.ExistingUserNames)
@@ -53,7 +53,10 @@
                     <td>@user.LastName</td>
                     <td>@Model.WalletAmounts[user.Id]</td>
                     <td>@user.IDNP</td>
-                    <td><a href="#" style="text-align:center" onclick="deleteUser('@user')">x</a></td>
+                    <td>
+                        <a asp-action="EditAccount" asp-controller="Account" asp-route-id="@user.Id">Edit</a>
+                        <a href="#" onclick="deleteUser('@user')">x</a>
+                    </td>
                 </tr>
             }
         </table>

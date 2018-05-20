@@ -95,6 +95,56 @@ namespace iParking.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        public IActionResult EditAccount(string id)
+        {
+            var user = _userManager.Users.FirstOrDefault(f => f.Id == id);
+
+            if(user == null)
+            {
+                return View();
+            }
+            var editModel = new UserAccountEditViewModel
+            {
+                Id = user.Id,
+                BirthDate = user.BirthDate,
+                Email = user.Email,
+                IDNP = user.IDNP,
+                NickName = user.UserName,
+                Nume = user.FirstName,
+                PhoneNumber = user.PhoneNumber,
+                Prenume = user.LastName
+            };
+            return View(editModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditAccount(UserAccountEditViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = _userManager.Users.FirstOrDefault(f => f.Id == model.Id);
+
+                if(user != null)
+                {
+                    user.BirthDate = model.BirthDate;
+                    user.FirstName = model.Nume;
+                    user.LastName = model.Prenume;
+                    user.Email = model.Email;
+                    user.UserName = model.NickName;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.IDNP = model.IDNP;
+
+                    var result = await _userManager.UpdateAsync(user);
+                    if(!result.Succeeded)
+                    {
+
+                    }
+                }
+            }
+            return RedirectToActionPermanent(nameof(CreateAccount), "Account");
+        }
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateAccount()
         {
             var users = GetExistingUsers();
