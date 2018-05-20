@@ -29,16 +29,10 @@
             @Html.DisplayFor(model => model.AmountPaid)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.VerificationCode)
+            QrCode
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.VerificationCode)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.User.Id)
+            <div id="qrcode" style="width:200px;height:200px;"></div>
         </dd>
     </dl>
 </div>
@@ -46,3 +40,16 @@
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+@section Scripts
+    {
+    <script type="text/javascript" src="~/js/qrcode.min.js"></script>
+    <script type="text/javascript">
+        new QRCode(document.getElementById("qrcode"), {
+            text: "@Url.Action("VerifyCode", "Reservations", new { verification_code = Model.VerificationCode }, Url.ActionContext.HttpContext.Request.Scheme)",
+            width: 200,
+            height: 200
+        });
+    </script>
+}
