@@ -33,31 +33,21 @@
                 <span asp-validation-for="ParkingTime" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="CarNumber" class="control-label"></label>
+                <input asp-for="CarNumber" class="form-control" />
+                <span asp-validation-for="CarNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CarCategory" class="control-label"></label>
+                <input asp-for="CarCategory" class="form-control" />
+                <span asp-validation-for="CarCategory" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Rezerva" class="btn btn-default" />
             </div>
         </form>
     </div>
-    <div class="col-md-4 text-right">
-        <table border="1">
-            <tr>
-                <td>First Name</td>
-                <td>@user?.FirstName</td>
-            </tr>
-            <tr>
-                <td>Last Name</td>
-                <td>@user?.LastName</td>
-            </tr>
-            <tr>
-                <td>Email</td>
-                <td>@user?.Email</td>
-            </tr>
-            <tr>
-                <td>Phone</td>
-                <td>@user?.PhoneNumber</td>
-            </tr>
-        </table>
-    </div>
-
     <div id="map"></div>
 </div>
 

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using iParking.Data;
 using iParking.Models;
 using Microsoft.AspNetCore.Identity;
+using iParking.Services;
 
 namespace iParking.Controllers
 {
@@ -15,10 +16,13 @@ namespace iParking.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWalletService _walletService;
 
-        public ReservationsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ReservationsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
+            IWalletService wallet)
         {
             _context = context;
+            _walletService = wallet;
             _userManager = userManager;
         }
 
@@ -49,28 +53,68 @@ namespace iParking.Controllers
             return View(parkingReservation);
         }
 
+        public IActionResult GetLatLong(int parkingId)
+        {
+            var parking = _context.Parkings.FirstOrDefault(f => f.Id == parkingId);
+            return Json(parking);
+        }
         // GET: Reservations/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
+            ReservationCreateViewModel vm = new ReservationCreateViewModel
+            {
+                AvailableParkings = _context.Parkings.ToList(),
+            };
+            return View(vm);
         }
 
+        public decimal CalcPrice(int parkingId, int hours)
+        {
+            var parking = _context.Parkings.FirstOrDefault(f => f.Id == parkingId);
+
+            if(parking != null)
+            {
+                return hours * parking.PricePerHour;
+            }
+            return 0;
+        }
         // POST: Reservations/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,ParkingDate,ParkingTime,AmountPaid,VerificationCode")] ParkingReservation parkingReservation)
+        public async Task<IActionResult> Create(ReservationCreateViewModel model)
         {
 
             var userId = _userManager.GetUserId(User);
+            if(ModelState.IsValid)
+            {
+                var parking = _context.Parkings.FirstOrDefault(f => f.Id == model.ParkingId);
+                var totalAmount = model.ParkingDuration * parking.PricePerHour;
 
-            parkingReservation.UserId = userId;
-            parkingReservation.VerificationCode = Guid.NewGuid();
-            _context.Add(parkingReservation);
-            await _context.SaveChangesAsync();
-            return View("ReservationDetails", parkingReservation);
+                if (_walletService.Pay(totalAmount, User))
+                {
+                    var parkingReservation = new ParkingReservation
+                    {
+                        UserId = userId,
+                        CarCategory = model.CarCategory,
+                        CarNumber = model.CarNumber,
+                        ParkingDate = model.ParkingDate,
+                        ParkingTime = model.ParkingDuration,
+                        VerificationCode = Guid.NewGuid(),
+                        AmountPaid = model.ParkingDuration * parking.PricePerHour
+                    };
+                    _context.Add(parkingReservation);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Details), "Reservations", new { id = parkingReservation.Id });
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Nu aveti destui bani in cont. Va rog sa supliniti contul cu rubla.");
+                }
+            }
+            model.AvailableParkings = _context.Parkings.ToList();
+            return View(model);
         }
 
         public string VerifyCode(Guid verification_code)

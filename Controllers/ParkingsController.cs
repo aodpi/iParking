@@ -52,7 +52,7 @@ namespace iParking.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ParkingName,ParkingNumber,ParkingSlots,PricePerHour")] Parking parking)
+        public async Task<IActionResult> Create([Bind("Id,ParkingName,ParkingNumber,ParkingSlots,PricePerHour,Latitude,Longitude")] Parking parking)
         {
             if (ModelState.IsValid)
             {
@@ -84,7 +84,7 @@ namespace iParking.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ParkingName,ParkingNumber,ParkingSlots,PricePerHour")] Parking parking)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ParkingName,ParkingNumber,ParkingSlots,PricePerHour,Latitude,Longitude")] Parking parking)
         {
             if (id != parking.Id)
             {

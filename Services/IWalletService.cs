@@ -15,6 +15,7 @@ namespace iParking.Services
     {
         string GetCurrentAmount(ClaimsPrincipal user);
         string GetCurrentAmount(string userId);
+        bool Pay(decimal amount, ClaimsPrincipal user);
     }
 
     public class WalletService : IWalletService
@@ -32,6 +33,27 @@ namespace iParking.Services
         {
             var userId = _userManager.GetUserId(user);
             return GetCurrentAmount(userId);
+        }
+
+        public bool Pay(decimal amount, ClaimsPrincipal user)
+        {
+            var userId = _userManager.GetUserId(user);
+            var wallet = _context.Wallets.FirstOrDefault(f => f.UserId == userId);
+
+            if(wallet != null)
+            {
+                if(amount > wallet.Amount)
+                {
+                    return false;
+                }
+
+                wallet.Amount -= amount;
+                _context.Update(wallet);
+                _context.SaveChanges();
+                return true;
+            }
+
+            return false;
         }
 
         public string GetCurrentAmount(string userId)
