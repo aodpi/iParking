@@ -154,21 +154,21 @@
 
         $("#ParkingId").change(function (val) {
             $.get({
-                url: 'Reservations/GetLatLong?parkingId=' + $(this).val(),
+                url: 'GetLatLong?parkingId=' + $(this).val(),
                 success: function (data) {
                     calcRoute(currentPos, new google.maps.LatLng(data.latitude, data.longitude));
                 }
             });
 
             $.get({
-                url: "Reservations/CalcPrice/?parkingId=" + $(this).val() + "&hours=" + $("#ParkingDuration").val(),
+                url: "CalcPrice/?parkingId=" + $(this).val() + "&hours=" + $("#ParkingDuration").val(),
                 success: function (data) {
                     $("#tamount").text(data);
                 }
             })
 
             $.get({
-                url: "Reservations/GetAvailableSlots/?parkingId=" + $(this).val(),
+                url: "GetAvailableSlots/?parkingId=" + $(this).val(),
                 success: function (data) {
                     if (data.length > 0) {
                         aslots.empty();
@@ -218,7 +218,7 @@
 
         $("#ParkingDuration").change(function (val) {
             $.get({
-                url: "Reservations/CalcPrice/?parkingId=" + $("#ParkingId").val() + "&hours=" + $(this).val(),
+                url: "CalcPrice/?parkingId=" + $("#ParkingId").val() + "&hours=" + $(this).val(),
                 success: function (data) {
                     $("#tamount").text(data);
 
