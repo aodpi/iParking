@@ -146,7 +146,7 @@ namespace iParking.Controllers
 
         public IActionResult Reservations()
         {
-            var applicationDbContext = _context.ParkingReservations;
+            var applicationDbContext = _context.ParkingReservations.Include(p => p.User);
             return View(applicationDbContext);
         }
 
