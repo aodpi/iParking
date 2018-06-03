@@ -24,6 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.User)
             </th>
+            <th>
+                Achitat
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -43,7 +46,10 @@
                 @Html.DisplayFor(modelItem => item.VerificationCode)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
+                @Html.DisplayFor(modelItem => item.User.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelitem => item.AmountPaid + " lei");
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Id">Detalii</a>
