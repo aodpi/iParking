@@ -50,7 +50,7 @@
                 @Html.DisplayFor(modelItem => item.User.UserName)
             </td>
             <td>
-                @Html.DisplayFor(modelitem => item.AmountPaid + " lei");
+                @(item.AmountPaid + " lei")
             </td>
             <td>
                 <a asp-action="ReservationDetails" asp-route-id="@item.Id">Detalii</a>
