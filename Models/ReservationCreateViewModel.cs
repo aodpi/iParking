@@ -7,7 +7,7 @@ namespace iParking.Models
     public class ReservationCreateViewModel
     {
         public int ParkingId { get; set; }
-        [Required, Display(Name = "Numar de inmatriculare")]
+        [Required, Display(Name = "Număr de înmatriculare")]
         public string CarNumber { get; set; }
 
         [Required]

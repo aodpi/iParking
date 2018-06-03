@@ -24,7 +24,7 @@ namespace iParking.Models.AccountViewModels
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        [Required, DataType(DataType.PhoneNumber)]
+        [Required, DataType(DataType.PhoneNumber), Display(Name = "Nr. telefon")]
         public string PhoneNumber { get; set; }
 
         [Required, Display(Name = "Nume")]

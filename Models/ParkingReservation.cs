@@ -11,7 +11,7 @@ namespace iParking.Models
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
-        [Required, Display(Name = "Numar masina")]
+        [Required, Display(Name = "Număr mașină")]
         public string CarNumber { get; set; }
 
         [Required]

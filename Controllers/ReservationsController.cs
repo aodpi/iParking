@@ -142,7 +142,7 @@ namespace iParking.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Nu aveti destui bani in cont. Va rog sa supliniti contul cu rubla.");
+                    ModelState.AddModelError(string.Empty, "Resurse insuficiente în cont.");
                 }
             }
             model.AvailableParkings = _context.Parkings.ToList();

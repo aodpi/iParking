@@ -9,13 +9,15 @@ namespace iParking.Models.AccountViewModels
     public class LoginViewModel
     {
         [Required]
+        [Display(Name = "Nume utilizator")]
         public string UserName { get; set; }
 
         [Required]
+        [Display(Name = "Parolă")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Memorează-mă?")]
         public bool RememberMe { get; set; }
     }
 }
