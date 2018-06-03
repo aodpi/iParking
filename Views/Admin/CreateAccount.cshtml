@@ -54,7 +54,7 @@
                     <td>@Model.WalletAmounts[user.Id]</td>
                     <td>@user.IDNP</td>
                     <td>
-                        <a asp-action="EditAccount" asp-controller="Account" asp-route-id="@user.Id">Edit</a>
+                        <a asp-action="EditAccount" asp-controller="Admin" asp-route-id="@user.Id">Edit</a>
                         <a href="#" onclick="deleteUser('@user')">x</a>
                     </td>
                 </tr>
@@ -72,7 +72,7 @@
         function deleteUser(username) {
             if (confirm("Sunteti sigur ca doriti sa stergeti utilizatorul: " + username + "?")) {
                 $.ajax({
-                    url: '@(Url.Action("DeleteUser", "Account"))/?username=' + username,
+                    url: '@(Url.Action("DeleteUser", "Admin"))/?username=' + username,
                     type: 'DELETE',
                     success: function (data) {
                         window.location.reload();
