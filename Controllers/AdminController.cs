@@ -9,6 +9,7 @@ using iParking.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace iParking.Controllers
@@ -45,6 +46,82 @@ namespace iParking.Controllers
             return Ok();
         }
 
+        // GET: Reservations/Edit/5
+        public async Task<IActionResult> ReservationEdit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var parkingReservation = await _context.ParkingReservations.SingleOrDefaultAsync(m => m.Id == id);
+            if (parkingReservation == null)
+            {
+                return NotFound();
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", parkingReservation.UserId);
+            return View(parkingReservation);
+        }
+
+        // POST: Reservations/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReservationEdit(int id, [Bind("Id,UserId,ParkingDate,ParkingTime,AmountPaid,VerificationCode")] ParkingReservation parkingReservation)
+        {
+            if (id != parkingReservation.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(parkingReservation);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ParkingReservationExists(parkingReservation.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", parkingReservation.UserId);
+            return View(parkingReservation);
+        }
+
+        private bool ParkingReservationExists(int id)
+        {
+            return _context.ParkingReservations.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> ReservationDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var parkingReservation = await _context.ParkingReservations
+                .Include(p => p.User)
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (parkingReservation == null)
+            {
+                return NotFound();
+            }
+
+            return View(parkingReservation);
+        }
+
         public IActionResult EditAccount(string id)
         {
             var user = _userManager.Users.FirstOrDefault(f => f.Id == id);
@@ -65,6 +142,12 @@ namespace iParking.Controllers
                 Prenume = user.LastName
             };
             return View(editModel);
+        }
+
+        public IActionResult Reservations()
+        {
+            var applicationDbContext = _context.ParkingReservations;
+            return View(applicationDbContext);
         }
 
         [HttpPost]

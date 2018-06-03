@@ -1,0 +1,55 @@
+﻿@model IEnumerable<iParking.Models.ParkingReservation>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Rezervări</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ParkingDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ParkingTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AmountPaid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VerificationCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ParkingDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ParkingTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AmountPaid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VerificationCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Id)
+                </td>
+                <td>
+                    <a asp-action="ReservationDetails" asp-route-id="@item.Id">Detalii</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

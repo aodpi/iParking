@@ -14,10 +14,16 @@ namespace iParking.Models
         [Required, Display(Name = "Număr mașină")]
         public string CarNumber { get; set; }
 
-        [Required]
+        [Required, Display(Name = "Categorie mașină")]
         public string CarCategory { get; set; }
+
+        [Display(Name = "Dată parcare")]
         public DateTime ParkingDate { get; set; }
+
+        [Display(Name = "Timp parcare")]
         public int ParkingTime { get; set; }
+
+        [Display(Name = "Suma achitată")]
         public decimal AmountPaid { get; set; }
         public int ParkingId { get; set; }
         public Parking Parking { get; set; }

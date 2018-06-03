@@ -1,0 +1,55 @@
+﻿@model iParking.Models.ParkingReservation
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Detalii</h2>
+
+<div>
+    <h4>Rezervare parcare</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ParkingDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ParkingDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ParkingTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ParkingTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AmountPaid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AmountPaid)
+        </dd>
+        <dt>
+            QrCode
+        </dt>
+        <dd>
+            <div id="qrcode" style="width:200px;height:200px;"></div>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="ReservationEdit" asp-route-id="@Model.Id">Redactare</a> |
+    <a asp-action="Reservations">Înapoi</a>
+</div>
+
+
+@section Scripts
+    {
+    <script type="text/javascript" src="~/js/qrcode.min.js"></script>
+    <script type="text/javascript">
+        new QRCode(document.getElementById("qrcode"), {
+            text: "@Url.Action("VerifyCode", "Reservations", new { verification_code = Model.VerificationCode }, Url.ActionContext.HttpContext.Request.Scheme)",
+            width: 200,
+            height: 200
+        });
+    </script>
+}

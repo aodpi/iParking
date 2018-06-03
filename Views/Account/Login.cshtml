@@ -45,14 +45,14 @@
                 </div>
                 @if (!isAdmin)
                 {
-                <div class="form-group">
-                    <p>
-                        <a asp-action="ForgotPassword">A-ți uitat parola?</a>
-                    </p>
-                    <p>
-                        <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Creare cont nou?</a>
-                    </p>
-                </div>
+                    <div class="form-group">
+                        <p>
+                            <a asp-action="ForgotPassword">A-ți uitat parola?</a>
+                        </p>
+                        <p>
+                            <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Creare cont nou?</a>
+                        </p>
+                    </div>
                 }
             </form>
         </section>
